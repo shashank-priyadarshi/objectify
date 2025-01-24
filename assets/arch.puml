@@ -1,0 +1,21 @@
+@startuml objectify
+    !theme cerulean
+
+    rectangle "<img assets/objectify.png>\nobjectify\nserver" as server
+    rectangle "<img assets/leveldb.png>\nleveldb" as leveldb
+    rectangle "<img assets/etcd.png>\netcd" as etcd
+    rectangle "<img assets/elasticsearch.png>\nelasticsearch" as es
+
+    server --> leveldb : Save serialized & zipped file
+    server --> etcd : Check if file exists
+    etcd --> server : Return file if exists
+    server --> leveldb : Fetch file if not in etcd
+    leveldb --> server : Return file
+    server --> es : Index text format files
+    server --> es : Query for specific content
+    es --> server : Return search results
+    server --> leveldb : Fetch file by content
+    leveldb --> server : Return file
+    server --> server : Decompress & deserialize file
+
+@enduml
